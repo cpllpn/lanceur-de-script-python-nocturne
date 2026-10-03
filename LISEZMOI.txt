@@ -1,0 +1,56 @@
+LANCEUR NOCTURNE — mode d'emploi
+================================
+
+Fichier :
+  C:\Users\gatti\Documents\lanceur\nightly_orchestrator.bat
+
+------------------------------------------------
+Quand ça tourne vraiment
+------------------------------------------------
+  Home Assistant WoL : mar-sam a 01:30
+  Puis le lanceur : SEULEMENT mar-sam entre 01h et 03h
+  (lundi ignore : pas de Bourse le dimanche ; samedi = cloture du vendredi)
+
+  Si tu allumes le PC le jour :
+    - meme si la tache Planificateur demarre
+    - le .bat sort tout de suite
+    - PAS de scripts, PAS d'extinction
+
+  Test manuel (force le run) :
+    nightly_orchestrator.bat --force
+    (commente temporairement la ligne shutdown pour ne pas eteindre)
+
+------------------------------------------------
+Planificateur de taches (recommande)
+------------------------------------------------
+Tache : AnalysesFinancieres-WatchlistNocturne (ou nouveau nom)
+
+1) Onglet ACTIONS
+   Programme : C:\Users\gatti\Documents\lanceur\nightly_orchestrator.bat
+   Demarrer dans : C:\Users\gatti\Documents\lanceur
+
+2) Onglet DECLENCHEURS — mieux que "Au demarrage" :
+   - Supprimer "Au demarrage du systeme"
+   - Nouveau : Hebdomadaire
+   - Mardi, Mercredi, Jeudi, Vendredi, Samedi
+   - Heure : 01:33:00
+   (HA allume a 01:30 → Windows pret → tache a 01:33)
+
+Comme ca la tache ne part PAS a chaque allumage manuel.
+Le garde-fou 01h-03h dans le .bat reste une securite en plus.
+
+------------------------------------------------
+Chaine actuelle
+------------------------------------------------
+  1) analyses-financieres (--no-shutdown --force : fenetre deja checkee)
+  2) US Leadership Tracker
+  3) shutdown unique (120 s)
+
+------------------------------------------------
+Ajouter un script plus tard
+------------------------------------------------
+  pushd "C:\Users\gatti\Documents\mon-projet"
+  "%PYEXE%" mon_script.py
+  popd
+
+Le script Python ne doit PAS faire shutdown ni pause.
